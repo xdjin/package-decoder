@@ -19,8 +19,8 @@ import ts.projects.packagedecoder.logic.packet.Packet;
 import ts.projects.packagedecoder.logic.packet.PacketType;
 
 /**
- * Class to parse the input content to a {@link Packet} (that contains the packet hierarchy)
- * Not thread-safe contains common field
+ * Class to parse the input hex string content to a {@link Packet} (that contains the packet hierarchy)
+ * Not thread-safe
  */
 @Service
 public class PacketParser {
@@ -68,27 +68,29 @@ public class PacketParser {
     private int parseVersion() {
         final String versionBinary = binaryString.substring(currentPosition, currentPosition + 3);
         currentPosition += 3;
-        return Integer.getInteger(versionBinary, 2);
+        return Integer.parseInt(versionBinary, 2);
     }
 
     private PacketType parseType() {
         final String typeBinary = binaryString.substring(currentPosition, currentPosition + 3);
         currentPosition += 3;
-        return PacketType.valueOf(typeBinary);
+        return PacketType.resolvePacketType(typeBinary);
     }
 
     private long parseLiteral() {
         long literal = 0;
         String currentSubstring;
-        final String isNotLast = "1";
-
-        currentSubstring = binaryString.substring(currentPosition, currentPosition + 1);
-        currentPosition += 1;
+        final String isLast = "0";
 
         do {
-            literal += Long.parseLong(binaryString.substring(currentPosition, currentPosition + 4), 2);
+            currentSubstring = binaryString.substring(currentPosition, currentPosition + 1);
+            currentPosition += 1;
+
+            final String literalValuePart = binaryString.substring(currentPosition, currentPosition + 4);
+            literal += Long.parseLong(literalValuePart, 2);
             currentPosition += 4;
-        } while (!currentSubstring.equals(isNotLast));
+
+        } while (!currentSubstring.equals(isLast));
 
         return literal;
     }
@@ -101,10 +103,10 @@ public class PacketParser {
         if (lengthType.equals("0")) {
             final String subPacketsLenghtBinary = binaryString.substring(currentPosition, currentPosition + 15);
             int lengthOfSubPackets = Integer.parseInt(subPacketsLenghtBinary, 2);
-            int begOfSubPackets = currentPosition;
             currentPosition += 15;
+            int begOfSubPackets = currentPosition;
 
-            while (lengthOfSubPackets > begOfSubPackets + currentPosition) {
+            while (lengthOfSubPackets > currentPosition - begOfSubPackets) {
                 subPackets.add(parsePacket());
             }
         } else {

@@ -54,7 +54,7 @@ public enum PacketType {
      * @param typeBinary a string that represents the type binary
      * @return the {@link PacketType}
      */
-    public static PacketType fromCode(String typeBinary) {
+    public static PacketType resolvePacketType(String typeBinary) {
         final PacketType packetType = PACKET_TYPE_MAP.get(typeBinary);
         if (packetType == null) {
             throw new ParsingException("Unknown packet type: Unable to resolve packet type for binary: " + typeBinary);

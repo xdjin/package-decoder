@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2025 Deutsche Post Direkt GmbH
- *
- * http://www.postdirekt.de
- *
- */
 package ts.projects.packagedecoder.in;
 
 import java.io.IOException;
@@ -31,15 +25,16 @@ public class FileInput implements InputSource {
         this.packageDecoderConfig = packageDecoderConfig;
     }
 
+    @Override
     public String readContentFromSource() {
         final String inputFilePath = packageDecoderConfig.getInputFilePath();
         Path path = Paths.get(inputFilePath);
         try {
+            LOG.info("Reading content from file '{}'", inputFilePath);
             byte[] data = Files.readAllBytes(path);
             return new String(data, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            LOG.error("Unable to read bytes from {}", path, e);
-            throw new InputSourceException("Unable to read contents from " + path);
+            throw new InputSourceException("Unable to read contents from " + path, e);
         }
     }
 }

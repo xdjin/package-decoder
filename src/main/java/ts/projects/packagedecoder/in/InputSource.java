@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2025 Deutsche Post Direkt GmbH
- *
- * http://www.postdirekt.de
- *
- */
 package ts.projects.packagedecoder.in;
 
 /**
@@ -15,5 +9,5 @@ public interface InputSource {
      *
      * @return the content as string
      */
-     String readContentFromSource();
+    String readContentFromSource();
 }

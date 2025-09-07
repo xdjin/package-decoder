@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2025 Deutsche Post Direkt GmbH
- *
- * http://www.postdirekt.de
- *
- */
 package ts.projects.packagedecoder.logic.parser;
 
 import static ts.projects.packagedecoder.logic.packet.PacketType.LITERAL;
@@ -30,23 +24,15 @@ public class PacketParser {
     private int currentPosition = 0;
 
     /**
-     * Initializes the parser with a new binary string to create a {@link Packet} from
+     * Initializes the parser with a new binary string to create a {@link Packet}
      *
-     * @param hexString
+     * @param hexString the input for the parser in form of a hex string e.g "9C005AC2F8F0"
      */
     public void initParser(final String hexString) {
         LOG.info("Initializing packet parser with new binary string");
+        currentPosition = 0;
         binaryString = HexToBinaryParser.convertToBinaryString(hexString);
     }
-
-    /**
-     * Resets the parser so new packets can be parsed
-     */
-    public void resetParser() {
-        currentPosition = 0;
-        binaryString = "";
-    }
-
 
     /**
      * Parses the content of a package based
@@ -78,7 +64,7 @@ public class PacketParser {
     }
 
     private long parseLiteral() {
-        long literal = 0;
+        StringBuilder literalBinaryStringBuilder = new StringBuilder();
         String currentSubstring;
         final String isLast = "0";
 
@@ -87,12 +73,12 @@ public class PacketParser {
             currentPosition += 1;
 
             final String literalValuePart = binaryString.substring(currentPosition, currentPosition + 4);
-            literal += Long.parseLong(literalValuePart, 2);
+            literalBinaryStringBuilder.append(literalValuePart);
             currentPosition += 4;
 
         } while (!currentSubstring.equals(isLast));
 
-        return literal;
+        return Long.parseLong(literalBinaryStringBuilder.toString(), 2);
     }
 
     private List<Packet> parseOperator() {

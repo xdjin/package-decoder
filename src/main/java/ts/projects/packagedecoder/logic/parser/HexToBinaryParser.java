@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2025 Deutsche Post Direkt GmbH
- *
- * http://www.postdirekt.de
- *
- */
 package ts.projects.packagedecoder.logic.parser;
 
 import java.util.Map;
@@ -37,6 +31,11 @@ public class HexToBinaryParser {
             Map.entry('F', "1111")
     );
 
+    /**
+     * Converts the given hex string to a binary string
+     * @param hexString to convert
+     * @return the binary string
+     */
     public static String convertToBinaryString(final String hexString) {
         LOG.info("Convert hex to binary string: hexString: {}", hexString);
         return hexString
@@ -46,7 +45,7 @@ public class HexToBinaryParser {
                     final String binaryString = HEX_TO_BINARY_MAP.get(hex);
 
                     if (binaryString == null) {
-                        throw  new ParsingException("Unable to parse hex to binary: Invalid hexadecimal character: " + hex);
+                        throw new ParsingException("Unable to parse hex to binary: Invalid hexadecimal character: " + hex);
                     }
 
                     return binaryString;

@@ -1,33 +1,43 @@
-/*
- * Copyright (c) 2025 Deutsche Post Direkt GmbH
- *
- * http://www.postdirekt.de
- *
- */
 package ts.projects.packagedecoder.logic;
 
+import javax.xml.stream.events.StartDocument;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import ts.projects.packagedecoder.in.InputSource;
+import ts.projects.packagedecoder.logic.packet.Packet;
+import ts.projects.packagedecoder.logic.parser.PacketParser;
 
 /**
- * Main class that handles the full decoding steps of packets
+ * Class that manages the orchestration of the decoding
  */
 @Component
 public class Decoder {
+    private static final Logger LOG = LoggerFactory.getLogger(Decoder.class);
 
-    InputSource inputSource;
+    final PacketParser packetParser;
 
     /**
      * Constructor
-     * @param inputSource the input source where the content should be read from
+     *
+     * @param packetParser the parser component
      */
-    public Decoder(InputSource inputSource) {
-        this.inputSource = inputSource;
+    public Decoder(final PacketParser packetParser) {
+        this.packetParser = packetParser;
     }
 
-    public String decodeInput(){
-        final String s = inputSource.readContentFromSource();
-        return "decoded string: " + s;
+    /**
+     * Orchestrates the decoding of a hex string that contains BITS encoded binary sequences
+     *
+     * @return the result of the decoding that contains the versionSum and packageValue
+     */
+    public DecoderResult decodeInput(final String hexString) {
+        packetParser.initParser(hexString);
+        LOG.info("Start parsing packet...");
+        final Packet packet = packetParser.parsePacket();
+        LOG.info("Finished parsing packet...");
+        return new DecoderResult(packet.calcVersionSum(), packet.calcValue());
     }
 }

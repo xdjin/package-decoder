@@ -30,7 +30,7 @@ class PacketTypeTest {
         Assertions.assertThat(packetTypeMax).isEqualTo(PacketType.OPERATOR_MAX);
         Assertions.assertThat(packetTypeGt).isEqualTo(PacketType.OPERATOR_GT);
         Assertions.assertThat(packetTypeLt).isEqualTo(PacketType.OPERATOR_LT);
-        Assertions.assertThat(packetTypeEq).isEqualTo(PacketType.OPERATOR_GT);
+        Assertions.assertThat(packetTypeEq).isEqualTo(PacketType.OPERATOR_EQ);
     }
 
     @Test
